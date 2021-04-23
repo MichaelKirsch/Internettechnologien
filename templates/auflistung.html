@@ -24,23 +24,26 @@
 {% block content %}
     <div>
         <div class="container">
-            <div id="mapid"></div>
-            <script>
-                var map = L.map('mapid').setView([47.721053, 10.307946], 13);
 
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(map);
-
-                var myGeocode = {{ data|tojson }};
-                myGeocode.forEach(function (item, index) {
-                    L.marker([item['coordsA'], item['coordsL']]).addTo(map)
-                });
-            </script>
             <ul>
+                <div id="mapid"  class="list-group-item d-flex justify-content-between align-items-center"></div>
+                    <script>
+                        var map = L.map('mapid').setView([47.721053, 10.307946], 13);
+
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+
+                        var myGeocode = {{ data|tojson }};
+                        myGeocode.forEach(function (item, index) {
+                            var mark = L.marker([item['coordsA'], item['coordsL']]).addTo(map);
+                            mark.bindPopup("<b>"+item['location']+"</b><br>"+item['description']+"<br>ID:"+ item['stationID'])
+                        });
+                    </script>
                 {% for item in data %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Automat {{ item.stationID }}  Standort  {{ item.location }} Type {{ item.type }}
+                        Automat {{ item.stationID }} Standort {{ item.location }} Type {{ item.type }}
+                        <p id="qid" >{{ item.stationID }}</p>
                         <span>
                         <a class="btn btn-light">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
