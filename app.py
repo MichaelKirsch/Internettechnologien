@@ -1,29 +1,20 @@
 from flask import Flask, render_template
-
+import db
+import sqlite3
 app = Flask(__name__)
+
+db.init_app(app)
+
+
 
 data=[
     {
-        'name':'Audrin',
-        'place': 'kaka',
-        'mob': '7736',
+        'id' : '1',
         'lat':'47.71423318561046',
-        'lon': '10.310717989923432'
-    },
-    {
-        'name': 'Stuvard',
-        'place': 'Goa',
-        'mob' : '546464',
-        'lat': '47.72774478260751',
-        'lon': '10.31603949260898'
-    },
-{
-        'name': 'dawrd',
-        'place': 'Goa',
-        'mob' : '546464',
-        'lat': '47.74774478260751',
-        'lon': '10.31603949260898'
-    },
+        'lon': '10.310717989923432',
+        'location':'Kempten',
+        'type' : 'Automat',
+    }
 ]
 
 
@@ -37,6 +28,16 @@ def eroeffnen():
 
 @app.route('/liste')
 def liste():
+    x = db.get_db()
+
+    cur = x.cursor()
+    try:
+        cur.execute('SELECT * FROM station')
+        data = [dict((cur.description[i][0], value) \
+                  for i, value in enumerate(row)) for row in cur.fetchall()]
+    finally:
+        cur.close()
+
     return render_template("auflistung.html", data=data)
 
 if __name__ == '__main__':

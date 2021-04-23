@@ -34,13 +34,13 @@
 
                 var myGeocode = {{ data|tojson }};
                 myGeocode.forEach(function (item, index) {
-                    L.marker([item['lat'], item['lon']]).addTo(map)
+                    L.marker([item['coordsA'], item['coordsL']]).addTo(map)
                 });
             </script>
             <ul>
                 {% for item in data %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Automat Standort {{ item.name }}
+                        Automat {{ item.stationID }}  Standort  {{ item.location }} Type {{ item.type }}
                         <span>
                         <a class="btn btn-light">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
