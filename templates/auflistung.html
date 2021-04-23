@@ -26,24 +26,57 @@
         <div class="container">
 
             <ul>
-                <div id="mapid"  class="list-group-item d-flex justify-content-between align-items-center"></div>
-                    <script>
-                        var map = L.map('mapid').setView([47.721053, 10.307946], 13);
+                <div id="mapid" class="list-group-item d-flex justify-content-between align-items-center"></div>
+                <script>
+                    var map = L.map('mapid').setView([47.721053, 10.307946], 13);
 
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        }).addTo(map);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
 
-                        var myGeocode = {{ data|tojson }};
-                        myGeocode.forEach(function (item, index) {
-                            var mark = L.marker([item['coordsA'], item['coordsL']]).addTo(map);
-                            mark.bindPopup("<b>"+item['location']+"</b><br>"+item['description']+"<br>ID:"+ item['stationID'])
-                        });
-                    </script>
+                    var myGeocode = {{ data|tojson }};
+                    myGeocode.forEach(function (item, index) {
+
+
+                        if (item['type'] == 'A') {
+
+                            var greenIcon = new L.Icon({
+                                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            });
+                            var mark = L.marker([item['coordsA'], item['coordsL']], {icon: greenIcon})
+                            mark.bindPopup("<b>" + item['location'] + "</b><br>" + item['description'] + "<br>ID:" + item['stationID'])
+                            mark.addTo(map);
+                        }
+                        if (item['type'] === 'B') {
+                            var redIcon = new L.Icon({
+                                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            });
+                            var mark = L.marker([item['coordsA'], item['coordsL']], {icon: redIcon})
+                            mark.bindPopup("<b>" + item['location'] + "</b><br>" + item['description'] + "<br>ID:" + item['stationID'])
+                            mark.addTo(map);
+                        }
+                        if (item['type'] === 'V') {
+                            var mark = L.marker([item['coordsA'], item['coordsL']])
+                            mark.bindPopup("<b>" + item['location'] + "</b><br>" + item['description'] + "<br>ID:" + item['stationID'])
+                            mark.addTo(map);
+                        }
+
+                    });
+                </script>
                 {% for item in data %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Automat {{ item.stationID }} Standort {{ item.location }} Type {{ item.type }}
-                        <p id="qid" >{{ item.stationID }}</p>
+                        <p id="qid">{{ item.stationID }}</p>
                         <span>
                         <a class="btn btn-light">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
